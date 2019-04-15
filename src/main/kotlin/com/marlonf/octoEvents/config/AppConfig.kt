@@ -16,12 +16,8 @@ class AppConfig : KoinComponent {
     private val eventController by inject<EventController>()
 
     fun setup() :Javalin {
-        return setup(null, null, null)
-    }
 
-    fun setup(url: String?, user: String?, password: String?) :Javalin {
-
-        startKoin(listOf(AppModules.modules(url, user, password)),
+        startKoin(listOf(AppModules.modules()),
                   KoinProperties(true, true))
 
         return Javalin.create().apply {
@@ -38,7 +34,7 @@ class AppConfig : KoinComponent {
 
             event(JavalinEvent.SERVER_STOPPED) { stopKoin() }
 
-            port(getProperty("server_port"))
+            port(getProperty("server.port"))
 
         }
     }

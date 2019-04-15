@@ -10,15 +10,17 @@ import org.koin.dsl.module.module
 
 object AppModules {
 
-    fun modules(url: String?, user: String?, password: String?) : Module {
+    fun modules() : Module {
         return module {
             single { AppConfig() }
             single { EventController(get()) }
             single { EventServiceImpl(get()) as EventService }
             single { EventRepository(get()) }
-            single { DbConfig(url ?: getProperty("jdbc.url") ,
-                            user ?: getProperty("db.username"),
-                            password ?: getProperty("db.password")).getDataSource() }
+            single { DbConfig(  getProperty("db.jdbc.url"),
+                                getProperty("db.username"),
+                                getProperty("db.password"),
+                                getProperty("db.driver")
+                    ).getDataSource() }
         }
     }
 }

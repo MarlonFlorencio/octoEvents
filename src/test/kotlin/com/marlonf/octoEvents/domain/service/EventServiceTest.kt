@@ -18,7 +18,7 @@ class IssueEventServiceTest : KoinTest {
 
     @Before
     fun setUp() {
-        StandAloneContext.startKoin(listOf(AppModules.modules(null, null, null)),
+        StandAloneContext.startKoin(listOf(AppModules.modules()),
                 KoinProperties(true, true))
     }
 
@@ -34,7 +34,7 @@ class IssueEventServiceTest : KoinTest {
     }
 
     @Test
-    fun `Event should be created`() {
+    fun `Events should be created`() {
         val eventId = eventService.create(
                 Event(action = "Test",
                         body = "Test",
