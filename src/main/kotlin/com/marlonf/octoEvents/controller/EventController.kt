@@ -1,10 +1,10 @@
-package octoEvents.controller
+package com.marlonf.octoEvents.controller
 
 import io.javalin.Context
 import io.javalin.apibuilder.ApiBuilder.*
-import octoEvents.converter.createEventFromPayLoad
-import octoEvents.services.EventService
-import org.koin.core.KoinComponent
+import com.marlonf.octoEvents.converter.createEventFromPayLoad
+import com.marlonf.octoEvents.domain.services.EventService
+import org.koin.standalone.KoinComponent
 
 
 class EventController(private val eventService: EventService) : KoinComponent {
@@ -12,7 +12,7 @@ class EventController(private val eventService: EventService) : KoinComponent {
     fun getRouters() {
         path("/issues") {
             post(this::createEvent)
-            get(":number/events", this::getEvents)
+            get(":number/events", this::listEventsByIssueNumber)
         }
     }
 
@@ -30,13 +30,13 @@ class EventController(private val eventService: EventService) : KoinComponent {
         }
     }
 
-    fun getEvents(ctx: Context) {
+    fun listEventsByIssueNumber(ctx: Context) {
 
         try {
             val number = ctx.pathParam("number").toLongOrNull()
                     ?: throw IllegalArgumentException("Invalid parameter")
 
-            ctx.json(eventService.getAllByNumber(number))
+            ctx.json(eventService.listEventsByIssueNumber(number))
 
         } catch (e: IllegalArgumentException) {
             ctx.status(400).json(e.message!!)
