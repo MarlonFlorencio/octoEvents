@@ -13,8 +13,8 @@ data class EventDto(
 data class IssueDto(
         val title: String,
         val number: Long,
-        val created_at: String?,
-        val updated_at: String?,
-        val closed_at: String?,
+        val created_at: String? = null,
+        val updated_at: String? = null,
+        val closed_at: String? = null,
         val body: String
 )

@@ -17,8 +17,8 @@ class AppConfig() : KoinComponent {
 
     fun setup() :Javalin {
 
-        startKoin(listOf(AppModules.modules()),
-                  KoinProperties(true, true))
+        startKoin(AppModules.modules(),
+                KoinProperties(true, true))
 
         return Javalin.create().apply {
 

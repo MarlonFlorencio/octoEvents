@@ -5,7 +5,7 @@ import org.joda.time.DateTime
 object DateUtil {
 
     fun parseToDateTime(value: String?): DateTime? {
-        if (value == null || value.isEmpty()) {
+        if (value == null || value.trim().isEmpty()) {
             return null
         }
 

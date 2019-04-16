@@ -4,6 +4,7 @@ import com.marlonf.octoEvents.config.AppModules
 import com.marlonf.octoEvents.domain.Event
 import com.marlonf.octoEvents.domain.services.EventService
 import junit.framework.Assert.*
+import org.joda.time.DateTime
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -12,13 +13,13 @@ import org.koin.standalone.StandAloneContext
 import org.koin.standalone.inject
 import org.koin.test.KoinTest
 
-class IssueEventServiceTest : KoinTest {
+class EventServiceTest : KoinTest {
 
     private val eventService by inject<EventService>()
 
     @Before
     fun setUp() {
-        StandAloneContext.startKoin(listOf(AppModules.modules()),
+        StandAloneContext.startKoin(AppModules.modules(),
                 KoinProperties(true, true))
     }
 
@@ -28,20 +29,55 @@ class IssueEventServiceTest : KoinTest {
     }
 
     @Test
-    fun `Event should be created`() {
-        val created = eventService.create(
-                Event(action = "Test",
-                        body = "Test",
-                        number = 10,
-                        title = "Test"))
-
-        assertTrue(created)
-    }
-
-    @Test
     fun `Event list should be empty`() {
         val events = eventService.listEventsByIssueNumber(187)
         assertTrue(events.isEmpty())
+    }
+
+    @Test
+    fun `Null number should return an empty list`() {
+        val events = eventService.listEventsByIssueNumber(null)
+        assertTrue(events.isEmpty())
+    }
+
+    @Test
+
+    fun `Event should be created and be equal`() {
+        val event = Event(action = "Action",
+                body = "Body",
+                number = 54,
+                createdAt = DateTime.now(),
+                closedAt = DateTime.now(),
+                updatedAt = DateTime.now(),
+                title = "Title")
+        
+        val created = eventService.create(event)
+        assertTrue(created)
+
+        val events = eventService.listEventsByIssueNumber(54)
+        assertEquals(1, events.size)
+        
+        val eventFromList = events[0]
+
+        assertEquals(event.action, eventFromList.action)
+        assertEquals(event.title, eventFromList.title)
+        assertEquals(event.number, eventFromList.number)
+        assertEquals(event.body, eventFromList.body)
+        assertEquals(event.createdAt, eventFromList.createdAt)
+        assertEquals(event.updatedAt, eventFromList.updatedAt)
+        assertEquals(event.closedAt, eventFromList.closedAt)
+    }
+
+    @Test
+    fun `Event list should return two elements`() {
+
+        val event = Event(action = "Action", body = "Body", number = 34, title = "Title")
+
+        eventService.create(event)
+        eventService.create(event)
+
+        val events = eventService.listEventsByIssueNumber(34)
+        assertEquals(2, events.size)
     }
 
 }

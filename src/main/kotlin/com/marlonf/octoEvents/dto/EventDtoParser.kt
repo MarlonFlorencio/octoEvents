@@ -14,7 +14,6 @@ object EventDtoParser {
                 createdAt = DateUtil.parseToDateTime(dto.issue.created_at),
                 updatedAt = DateUtil.parseToDateTime(dto.issue.updated_at),
                 closedAt = DateUtil.parseToDateTime(dto.issue.closed_at),
-                body = dto.issue.body
-        )
+                body = dto.issue.body)
     }
 }

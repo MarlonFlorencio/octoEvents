@@ -11,9 +11,9 @@ import org.koin.standalone.getProperty
 
 object AppModules {
 
-    fun modules(): Module {
+    fun modules(): List<Module> {
 
-        return module {
+        return listOf(module {
             run {
                 DbConfig(getProperty("db.jdbc.url"),
                         getProperty("db.username"),
@@ -26,6 +26,6 @@ object AppModules {
             single { EventController(get()) }
             single { EventServiceImpl(get()) as EventService }
             single { EventRepository() }
-        }
+        })
     }
 }

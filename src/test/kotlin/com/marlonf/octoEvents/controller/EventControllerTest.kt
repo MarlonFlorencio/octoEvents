@@ -7,7 +7,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-class IssueEventServiceTest () {
+class IssueEventServiceTest {
 
     private lateinit var app: Javalin
     private var baseUrl:String = ""
