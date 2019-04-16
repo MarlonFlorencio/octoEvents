@@ -1,11 +1,11 @@
 package com.marlonf.octoEvents.domain.services
 
-import com.marlonf.octoEvents.domain.model.Event
+import com.marlonf.octoEvents.domain.Event
 import com.marlonf.octoEvents.domain.repository.EventRepository
 
 interface EventService {
     fun listEventsByIssueNumber(number: Long?): List<Event>
-    fun create(event: Event): Long?
+    fun create(event: Event): Boolean
 }
 
 class EventServiceImpl(private val eventRepository: EventRepository) : EventService {
@@ -15,7 +15,7 @@ class EventServiceImpl(private val eventRepository: EventRepository) : EventServ
         return eventRepository.listEventsByIssueNumber(number) ?: emptyList()
     }
 
-    override fun create(event: Event): Long? {
+    override fun create(event: Event): Boolean {
         return eventRepository.create(event)
     }
 }

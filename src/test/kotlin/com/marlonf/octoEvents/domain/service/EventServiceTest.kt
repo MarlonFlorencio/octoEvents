@@ -1,7 +1,7 @@
 package com.marlonf.octoEvents.domain.service
 
 import com.marlonf.octoEvents.config.AppModules
-import com.marlonf.octoEvents.domain.model.Event
+import com.marlonf.octoEvents.domain.Event
 import com.marlonf.octoEvents.domain.services.EventService
 import junit.framework.Assert.*
 import org.junit.After
@@ -28,21 +28,20 @@ class IssueEventServiceTest : KoinTest {
     }
 
     @Test
-    fun `Event list should be empty`() {
-        val events = eventService.listEventsByIssueNumber(null)
-        assertTrue(events.isEmpty())
-    }
-
-    @Test
-    fun `Events should be created`() {
-        val eventId = eventService.create(
+    fun `Event should be created`() {
+        val created = eventService.create(
                 Event(action = "Test",
                         body = "Test",
                         number = 10,
                         title = "Test"))
 
-        assertNotNull(eventId)
+        assertTrue(created)
+    }
 
+    @Test
+    fun `Event list should be empty`() {
+        val events = eventService.listEventsByIssueNumber(187)
+        assertTrue(events.isEmpty())
     }
 
 }

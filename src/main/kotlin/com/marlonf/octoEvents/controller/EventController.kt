@@ -2,8 +2,9 @@ package com.marlonf.octoEvents.controller
 
 import io.javalin.Context
 import io.javalin.apibuilder.ApiBuilder.*
-import com.marlonf.octoEvents.converter.createEventFromPayLoad
 import com.marlonf.octoEvents.domain.services.EventService
+import com.marlonf.octoEvents.dto.EventDto
+import com.marlonf.octoEvents.dto.EventDtoParser
 import org.koin.standalone.KoinComponent
 
 
@@ -19,7 +20,8 @@ class EventController(private val eventService: EventService) : KoinComponent {
     fun createEvent(ctx: Context) {
 
         try {
-            eventService.create(createEventFromPayLoad(ctx.body()))
+            val eventDto = ctx.bodyAsClass(EventDto::class.java)
+            eventService.create(EventDtoParser.parse(eventDto))
             ctx.status(201)
 
         } catch (e: IllegalArgumentException) {

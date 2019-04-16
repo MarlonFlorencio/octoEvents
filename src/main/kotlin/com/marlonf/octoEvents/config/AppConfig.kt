@@ -11,7 +11,7 @@ import org.koin.standalone.StandAloneContext.stopKoin
 import org.koin.standalone.getProperty
 import org.koin.standalone.inject
 
-class AppConfig : KoinComponent {
+class AppConfig() : KoinComponent {
 
     private val eventController by inject<EventController>()
 
@@ -29,7 +29,7 @@ class AppConfig : KoinComponent {
             routes { eventController.getRouters() }
 
             requestLogger { ctx, timeMs ->
-                println("${ctx.method()} ${ctx.path()} took $timeMs ms")
+                println("${ctx.method()} ${ctx.status()} ${ctx.path()} took $timeMs ms")
             }
 
             event(JavalinEvent.SERVER_STOPPED) { stopKoin() }

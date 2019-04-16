@@ -1,68 +1,71 @@
 package com.marlonf.octoEvents.domain.repository
 
-import com.marlonf.octoEvents.domain.model.Event
-import org.jetbrains.exposed.dao.LongIdTable
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.insertAndGetId
-import org.jetbrains.exposed.sql.select
+import com.marlonf.octoEvents.domain.Event
+import org.jetbrains.exposed.dao.*
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
-import javax.sql.DataSource
+import java.util.*
 
-internal object Events : LongIdTable() {
 
-    val action: Column<String> = varchar("action", 200)
-    val number: Column<Long> = long("number")
-    val title: Column<String> = varchar("title", 150)
-    val created_at: Column<String?> = varchar("created_at", 30).nullable()
-    val updated_at: Column<String?> = varchar("updated_at", 30).nullable()
-    val closed_at: Column<String?> = varchar("closed_at", 30).nullable()
+object EventTable : UUIDTable("events") {
+
+    val action = varchar("action", 200)
+    val number = long("number")
+    val title = varchar("title", 150)
+    val createdAt = datetime("created_at").nullable()
+    val updatedAt = datetime("updated_at").nullable()
+    val closedAt = datetime("closed_at").nullable()
     val body: Column<String> = varchar("body", 1000)
 
-    fun toDomain(row: ResultRow): Event {
+    fun toDomain(entity: EventEntity): Event {
+        println()
         return Event(
-                id = row[Events.id].value,
-                action = row[Events.action],
-                number = row[Events.number],
-                title = row[Events.title],
-                created_at = row[Events.created_at],
-                updated_at = row[Events.updated_at],
-                closed_at = row[Events.closed_at],
-                body = row[Events.body]
+                id = entity.id.value,
+                action = entity.action,
+                number = entity.number,
+                title = entity.title,
+                createdAt = entity.createdAt,
+                updatedAt = entity.updatedAt,
+                closedAt = entity.closedAt,
+                body = entity.body
         )
     }
 }
 
-class EventRepository(private val dataSource: DataSource) {
+class EventEntity(id: EntityID<UUID>) : UUIDEntity(id) {
+    companion object : UUIDEntityClass<EventEntity>(EventTable)
+    var action by EventTable.action
+    var number by EventTable.number
+    var title by EventTable.title
+    var createdAt by EventTable.createdAt
+    var updatedAt by EventTable.updatedAt
+    var closedAt by EventTable.closedAt
+    var body by EventTable.body
+}
+
+class EventRepository {
 
     init {
-        transaction(Database.connect(dataSource)) {
-            SchemaUtils.create(Events)
+        transaction {
+            SchemaUtils.create(EventTable)
         }
     }
 
-    fun listEventsByIssueNumber(number: Long): List<Event>? {
-        return transaction(Database.connect(dataSource)) {
-            Events.select { Events.number eq number }
-                    .map { Events.toDomain(it) }
-                    .toList()
-        }
+    fun create(event: Event): Boolean  = transaction  {
+        EventEntity.new {
+            this.action = event.action
+            this.number = event.number
+            this.title = event.title
+            this.createdAt = event.createdAt
+            this.updatedAt = event.updatedAt
+            this.closedAt = event.closedAt
+            this.body = event.body
+        }.flush()
     }
 
-    fun create(event: Event): Long? {
-        println(event)
-        return transaction(Database.connect(dataSource)) {
-            Events.insertAndGetId { row ->
-                row[Events.action] = event.action
-                row[Events.number] = event.number
-                row[Events.title] = event.title
-                row[Events.created_at] = event.created_at
-                row[Events.updated_at] = event.updated_at
-                row[Events.closed_at] = event.closed_at
-                row[Events.body] = event.body
-            }.value
-        }
+    fun listEventsByIssueNumber(number: Long): List<Event>? = transaction {
+        EventEntity.find { EventTable.number eq number }
+                .orderBy(EventTable.updatedAt to SortOrder.ASC)
+                   .map { ent -> EventTable.toDomain(ent) }
     }
 }
