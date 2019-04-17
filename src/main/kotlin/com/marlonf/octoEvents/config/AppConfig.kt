@@ -26,6 +26,8 @@ class AppConfig() : KoinComponent {
 
             error(404) { ctx -> ctx.json("not found") }
 
+            disableStartupBanner()
+
             routes { eventController.getRouters() }
 
             requestLogger { ctx, timeMs ->
