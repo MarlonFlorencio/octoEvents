@@ -13,19 +13,18 @@ Octo Events is an application that listens to Github Events via webhooks
   - [Postgres](https://github.com/postgres/postgres) as database
   - [Khttp](https://github.com/jkcclemens/khttp) as HTTP client
 
-## Test
 
-Run tests
+## Execution
+
+##### Run tests
 
 ```bash
 $ mvn clean test
 ```
 
-## Execution
-
 ##### Prerequisite
 
-Postgres database conection. The application will look for the following location:
+Postgres as database conection. The application will look for the following location:
 ```bash
 //localhost:5432/postgres
 ```
