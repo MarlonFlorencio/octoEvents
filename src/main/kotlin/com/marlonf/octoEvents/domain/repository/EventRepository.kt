@@ -7,18 +7,17 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.*
 
 
-object EventTable : UUIDTable("events") {
+private object EventTable : UUIDTable("events") {
 
     val action = varchar("action", 200)
     val number = long("number")
     val title = varchar("title", 150)
-    val createdAt = datetime("created_at").nullable()
-    val updatedAt = datetime("updated_at").nullable()
-    val closedAt = datetime("closed_at").nullable()
+    val createdAt = varchar("created_at",50).nullable()
+    val updatedAt = varchar("updated_at",50).nullable()
+    val closedAt = varchar("closed_at", 50).nullable()
     val body: Column<String> = varchar("body", 1000)
 
     fun toDomain(entity: EventEntity): Event {
-        println()
         return Event(
                 id = entity.id.value,
                 action = entity.action,

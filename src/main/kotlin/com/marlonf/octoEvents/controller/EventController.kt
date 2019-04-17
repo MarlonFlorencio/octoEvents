@@ -1,10 +1,11 @@
 package com.marlonf.octoEvents.controller
 
+import com.fasterxml.jackson.core.JsonProcessingException
 import io.javalin.Context
 import io.javalin.apibuilder.ApiBuilder.*
 import com.marlonf.octoEvents.domain.services.EventService
 import com.marlonf.octoEvents.dto.EventDto
-import com.marlonf.octoEvents.dto.EventDtoParser
+import com.marlonf.octoEvents.dto.EventParser
 import org.koin.standalone.KoinComponent
 
 
@@ -21,13 +22,14 @@ class EventController(private val eventService: EventService) : KoinComponent {
 
         try {
             val eventDto = ctx.bodyAsClass(EventDto::class.java)
-            eventService.create(EventDtoParser.parse(eventDto))
+            eventService.create(EventParser.parse(eventDto))
             ctx.status(201)
 
-        } catch (e: IllegalArgumentException) {
+        } catch (e: JsonProcessingException) {
             ctx.status(400).json(e.message!!)
 
         } catch (e: Exception) {
+            println(e)
             ctx.status(500)
         }
     }

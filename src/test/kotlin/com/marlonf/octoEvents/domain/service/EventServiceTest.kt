@@ -46,9 +46,9 @@ class EventServiceTest : KoinTest {
         val event = Event(action = "Action",
                 body = "Body",
                 number = 54,
-                createdAt = DateTime.now(),
-                closedAt = DateTime.now(),
-                updatedAt = DateTime.now(),
+                createdAt = "2019-04-13T16:10:56Z",
+                updatedAt = "2019-05-13T17:10:56Z",
+                closedAt = "2019-06-13T18:10:56Z",
                 title = "Title")
         
         val created = eventService.create(event)
@@ -66,6 +66,15 @@ class EventServiceTest : KoinTest {
         assertEquals(event.createdAt, eventFromList.createdAt)
         assertEquals(event.updatedAt, eventFromList.updatedAt)
         assertEquals(event.closedAt, eventFromList.closedAt)
+
+        assertNotNull(eventFromList.id)
+        assertNotNull(eventFromList.action)
+        assertNotNull(eventFromList.title)
+        assertNotNull(eventFromList.number)
+        assertNotNull(eventFromList.body)
+        assertNotNull(eventFromList.createdAt)
+        assertNotNull(eventFromList.updatedAt)
+        assertNotNull(eventFromList.closedAt)
     }
 
     @Test
